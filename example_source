@@ -1,0 +1,14 @@
+<PartPriceInfo xmlns:ns1="http://www.Subaru.com">
+   <ns1:Subaru model="Legacy">
+      <ns1:Muffler> 400 </ns1:Muffler>
+      <ns1:Bumper> 100 </ns1:Bumper>
+      <ns1:Floormat> 50 </ns1:Floormat>
+      <ns1:WindShieldWipers> 20 </ns1:WindShieldWipers>
+   </ns1:Subaru>
+   <ns1:Subaru model="Outback">
+      <ns1:Muffler> 500 </ns1:Muffler>
+      <ns1:Bumper> 150 </ns1:Bumper>
+      <ns1:Floormat> 75 </ns1:Floormat>
+      <ns1:WindShieldWipers> 20 </ns1:WindShieldWipers>
+   </ns1:Subaru>
+</PartPriceInfo>
