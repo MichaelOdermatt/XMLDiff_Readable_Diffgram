@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using System.Xml.Linq;
 using System.Linq;
+using System.Diagnostics;
 
 namespace XMLDiff_Readable_Diffgram 
 {
@@ -17,17 +18,10 @@ namespace XMLDiff_Readable_Diffgram
             var sourceDoc = XDocument.Parse(source.ToString());
             var diffgramDoc = XDocument.Parse(diffgram.ToString());
 
-            foreach (var element in diffgramDoc.Descendants()) {
-                if (element.Name.LocalName.Equals("node")) {
-                    var index = element.Attribute("match").Value;
-                    if (index != null) {
-                        string soruceName = getNodeName(element, Int32.Parse(index), sourceDoc);
-                        element.Name = soruceName;
-                    }
-                }
-            }
+            var sourceDocWithPadding = new XDocument(new XElement("Padding", source));
+            traverseDiffgram(diffgramDoc.Root, sourceDocWithPadding.Root);
 
-            Console.WriteLine(diffgramDoc.ToString());
+            //Console.WriteLine(diffgramDoc.ToString());
         }
 
         private static string getNodeName(XElement element, int index, XDocument sourceDoc) {
@@ -35,36 +29,50 @@ namespace XMLDiff_Readable_Diffgram
             return "rename_me";
         }
 
-        private static void traverseDiffgram(XElement diffgramNode) {
+        private static void traverseDiffgram(XElement diffgramNode, XElement sourceNode) {
 
             // iterate through all child nodes
             foreach (var node in diffgramNode.Elements()) 
             {
-                string matchAttr = diffgramNode.Attribute( "match" ).Value;
-                XmlNodeList matchNodes = null;
+
+                if (node.Attribute("match") == null)
+                {
+                    continue;
+                }
+
+                string matchAttr = node.Attribute( "match" ).Value;
+                XElement matchNodes = null;
 
                 // if the node has a match attribute
                 if ( !string.IsNullOrEmpty(matchAttr) ) {
                     
-                    switch ( diffgramNode.Name.LocalName) {
+                    switch ( node.Name.LocalName) {
                         
                         // if the node is named 'node'
                         case "node":
-                            
-                            if ( matchNodes.Count != 1 )
-                                throw new Exception( "The 'match' attribute of 'node' element must select a single node." );
+                            int sourceIndex = int.Parse(matchAttr);
+
+                            Debug.WriteLine(sourceIndex);
+                            matchNodes = sourceNode.Elements().ToList()[sourceIndex - 1];
+                            //if ( matchNodes.Count != 1 )
+                            //throw new Exception( "The 'match' attribute of 'node' element must select a single node." );
                             //matchNodes.MoveNext();
-                            
+
+                            node.Name = matchNodes.Name;
+
                             // if the node has children use recursion
                             if ( diffgramNode.Elements().Count() > 0 )
-                                traverseDiffgram( diffgramElement, (XmlDiffViewParentNode)matchNodes.Current );
-                            
+                            {
+                                traverseDiffgram( node, matchNodes);
+                            }
 
-                            currentPosition = matchNodes.Current;
+                            //currentPosition = matchNodes.Current;
                             break;
                     }
                 }
             }
+
+            Console.WriteLine(diffgramNode);
         }
 
     }
