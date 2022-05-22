@@ -33,45 +33,69 @@ namespace XMLDiff_Readable_Diffgram
                         
                     // if the element is named 'node'
                     case "node":
-                        var sourceIndex = node.GetAttributeIntValue("match");
-                        if (sourceIndex == -1)
-                            continue;
+                        {
+                            var matchElement = GetMatchElement(node, sourceNode);
 
-                        if (sourceNode == null)
-                            continue;
+                            node.Name = matchElement.Name;
+                            node.RemoveAttributes();
+                            foreach (var attribute in matchElement.Attributes())
+                            {
+                                node.SetAttributeValue(attribute.Name, attribute.Value);
+                            }
 
-                        // from the source, get the element that
-                        // corresponds with the value of the match attribute 
-                        var matchElement = sourceNode.Elements().ToList()[sourceIndex - 1];
+                            // if the element has children use recursion
+                            if (diffgramNode.Elements().Count() > 0)
+                                traverseDiffgram(node, matchElement);
 
-                        node.Name = matchElement.Name;
-                        node.RemoveAttributes();
-                        foreach (var attribute in matchElement.Attributes()) {
-                            node.SetAttributeValue(attribute.Name, attribute.Value);
                         }
-
-                        // if the element has children use recursion
-                        if ( diffgramNode.Elements().Count() > 0 )
-                            traverseDiffgram( node, matchElement);
-
                         break;
 
                     case "add":
-                        var additionType = node.GetAttributeIntValue("type");
-                        if (additionType == -1)
-                            continue;
+                        {
+                            var additionType = node.GetAttributeIntValue("type");
+                            if (additionType == -1)
+                                continue;
 
-                        if (additionType == 1)
-                            node.Name = "added-element";
-                        else if (additionType == 2)
-                            node.Name = "added-attribute";
+                            if (additionType == 1)
+                                node.Name = "added-element";
+                            else if (additionType == 2)
+                                node.Name = "added-attribute";
 
-                        node.SetAttributeValue("type", null);
+                            node.SetAttributeValue("type", null);
 
-                        traverseDiffgram(node, null);
+                            traverseDiffgram(node, null);
+                        }
+                        break; 
+
+                    case "remove":
+                        {
+                            var matchElement = GetMatchElement(node, sourceNode);
+
+                            node.Name = "Removed";
+                            // add the match element as a child of node
+                            node.Add(matchElement);
+                            // remove the match attribute
+                            node.SetAttributeValue("match", null);
+
+                            traverseDiffgram(node, null);
+                        }
                         break; 
                 }
             }
+        }
+
+        private static XElement GetMatchElement(XElement node, XElement sourceNode)
+        {
+            var sourceIndex = node.GetAttributeIntValue("match");
+            if (sourceIndex == -1)
+                return null;
+
+            if (sourceNode == null)
+                return null;
+
+            // from the source, get the element that
+            // corresponds with the value of the match attribute 
+            return sourceNode.Elements().ToList()[sourceIndex - 1];
         }
 
     }
