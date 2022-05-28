@@ -84,7 +84,7 @@ namespace XMLDiff_Readable_Diffgram
             }
         }
 
-        private static XElement GetMatchElement(XElement node, XElement sourceNode)
+        private static XElement? GetMatchElement(XElement node, XElement? sourceNode)
         {
             var sourceIndex = node.GetAttributeIntValue("match");
             if (sourceIndex == -1)
