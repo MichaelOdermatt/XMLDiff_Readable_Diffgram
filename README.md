@@ -51,29 +51,29 @@ xmlns:xd="https://schemas.microsoft.com/xmltools/2002/xmldiff">
 
 Example Output:
 ```
-<xd:xmldiff version="1.0" srcDocHash="2079810781567709607" options="IgnoreChildOrder IgnoreNamespaces IgnorePrefixes" xmlns:xd="https://schemas.microsoft.com/xmltools/2002/xmldiff">
-  <PartPriceInfo xmlns:ns1="http://www.Subaru.com">
+<xmldiff xmlns="https://schemas.microsoft.com/xmltools/2002/xmldiff">
+  <PartPriceInfo xmlns:ns1="http://www.Subaru.com" xmlns="">
     <added-element name="Subaru" ns="http://www.Subaru.com" prefix="ns2">
       <added-attribute name="model">Impreza</added-attribute>
-      <xd:add>
+      <add xmlns="https://schemas.microsoft.com/xmltools/2002/xmldiff">
         <ns2:Muffler xmlns:ns2="http://www.Subaru.com">450</ns2:Muffler>
         <ns2:Bumper xmlns:ns2="http://www.Subaru.com">120</ns2:Bumper>
         <ns2:Floormat xmlns:ns2="http://www.Subaru.com">65</ns2:Floormat>
-      </xd:add>
-      <xd:add match="/1/2/4" opid="1" />
+      </add>
+      <add match="/1/2/4" opid="1" xmlns="https://schemas.microsoft.com/xmltools/2002/xmldiff" />
     </added-element>
     <ns1:Subaru model="Outback">
       <ns1:Muffler>
-        <xd:change match="1">600</xd:change>
+        <change match="1" xmlns="https://schemas.microsoft.com/xmltools/2002/xmldiff">600</change>
       </ns1:Muffler>
-      <xd:add>
+      <add xmlns="https://schemas.microsoft.com/xmltools/2002/xmldiff">
         <ns2:WindShieldWipers xmlns:ns2="http://www.Subaru.com">25</ns2:WindShieldWipers>
-      </xd:add>
+      </add>
       <Removed opid="1">
         <ns1:WindShieldWipers> 20 </ns1:WindShieldWipers>
       </Removed>
     </ns1:Subaru>
   </PartPriceInfo>
-  <xd:descriptor opid="1" type="move" />
-</xd:xmldiff>
+  <descriptor opid="1" type="move" />
+</xmldiff>
 ```
