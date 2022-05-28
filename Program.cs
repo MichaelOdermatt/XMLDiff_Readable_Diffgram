@@ -19,6 +19,8 @@ namespace XMLDiff_Readable_Diffgram
             var diffgramDoc = XDocument.Parse(diffgram.ToString());
 
             var sourceDocWithPadding = new XDocument(new XElement("Padding", source));
+
+            diffgramDoc.Root.RemoveAttributes();
             traverseDiffgram(diffgramDoc.Root, sourceDocWithPadding.Root);
 
             Console.WriteLine(diffgramDoc);
