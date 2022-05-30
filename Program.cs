@@ -28,12 +28,10 @@ namespace XMLDiff_Readable_Diffgram
 
         private static void traverseDiffgram(XElement diffgramNode, XElement? sourceNode) {
 
-            // iterate through all child elements 
             foreach (var node in diffgramNode.Elements()) 
             {
                 switch ( node.Name.LocalName) {
                         
-                    // if the element is named 'node'
                     case "node":
                         {
                             var matchElement = GetMatchElement(node, sourceNode);
@@ -45,7 +43,6 @@ namespace XMLDiff_Readable_Diffgram
                                 node.SetAttributeValue(attribute.Name, attribute.Value);
                             }
 
-                            // if the element has children use recursion
                             if (diffgramNode.Elements().Count() > 0)
                                 traverseDiffgram(node, matchElement);
 
@@ -74,9 +71,7 @@ namespace XMLDiff_Readable_Diffgram
                             var matchElement = GetMatchElement(node, sourceNode);
 
                             node.Name = "Removed";
-                            // add the match element as a child of node
                             node.Add(matchElement);
-                            // remove the match attribute
                             node.SetAttributeValue("match", null);
 
                             traverseDiffgram(node, null);
@@ -86,6 +81,9 @@ namespace XMLDiff_Readable_Diffgram
             }
         }
 
+        /// <summary>
+        /// Returns the child element at the index represented by the match attribute.
+        /// </summary>
         private static XElement? GetMatchElement(XElement node, XElement? sourceNode)
         {
             var sourceIndex = node.GetAttributeIntValue("match");
@@ -95,8 +93,6 @@ namespace XMLDiff_Readable_Diffgram
             if (sourceNode == null)
                 return null;
 
-            // from the source, get the element that
-            // corresponds with the value of the match attribute 
             return sourceNode.Elements().ToList()[sourceIndex - 1];
         }
 
